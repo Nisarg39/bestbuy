@@ -1,0 +1,10 @@
+Open terminal and type following command
+
+1. npx create-next-app@latest ./  (./ means create app in current location)
+2. go to app/ page.tsx and delete everything and type rafce and press enter. 
+    It will give a boiler plate
+    (If rafce doesnt work that means you have not installed es7+ vscode extension for react 
+    . so install es7+ ension on vs code)
+
+3. if cors issue . then follow this page - https://blog.logrocket.com/using-cors-next-js-handle-cross-origin-requests/
+    copy paste the code in next.config.js
