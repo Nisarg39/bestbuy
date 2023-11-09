@@ -39,8 +39,19 @@ const productDetails = async ({params : { id }} : Props) => {
                         </Link>
                     </div>
 
+                    
+                    <div className="flex flex-col items-center gap-3">
+                        <p className="text-[34px] text-secondary font-bold">
+                            {product.currency} {formatNumber(product.currentPrice)}
+                        </p>
+
+                        <p className="text-[21px] text-black opacity-50 line-through">
+                            {product.currency} {formatNumber(product.originalPrice)}
+                        </p>
+                    </div>
+                       
                     <div className="flex items-center gap-3">
-                        <div className="product-hearts">
+                        {/* <div className="product-hearts">
                             <Image 
                                 src="/assets/icons/red-heart.svg"
                                 alt="heart"
@@ -52,25 +63,25 @@ const productDetails = async ({params : { id }} : Props) => {
                                 {product.reviewsCount}
                             </p>
 
-                        </div>
+                        </div>  */}
 
-                        <div className="p-2 bg-white-200 rounded-10">
+                        {/* <div className="p-2 bg-white-200 rounded-10">
                             <Image
                                 src="/assets/icons/bookmark.svg"
                                 alt="bookmark"
                                 width={20}
                                 height={20}
                             />
-                        </div>
+                        </div> */}
 
-                        <div className="p-2 bg-white-200 rounded-10">
+                        {/* <div className="p-2 bg-white-200 rounded-10">
                             <Image
                                 src="/assets/icons/share.svg"
                                 alt="share"
                                 width={20}
                                 height={20}
                             />
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>
@@ -78,19 +89,19 @@ const productDetails = async ({params : { id }} : Props) => {
                 <div className="product-info">
                     <div className="flex flex-col gap-2">
 
-                        <p className="text-[34px] text-secondary font-bold">
+                        {/* <p className="text-[34px] text-secondary font-bold">
                         {product.currency} {formatNumber(product.currentPrice)}
                         </p>
 
                         <p className="text-[21px] text-black opacity-50 line-through">
-                        {product.currency} {formatNumber(product.originalPrice)}
-                        </p>
+                            {product.currency} {formatNumber(product.originalPrice)}
+                        </p> */}
                         
                     </div>
                         
                     <div className="flex flex-col gap-4">
                         <div className="flex gap-3">
-                            <div className="product-stars">
+                            {/* <div className="product-stars">
                                 <Image
                                     src="/assets/icons/star.svg"
                                     alt="star"
@@ -100,9 +111,9 @@ const productDetails = async ({params : { id }} : Props) => {
                                 <p className="text-sm text-primary-orange font-semibold">
                                     {product.stars || '25'}
                                 </p>
-                            </div>
+                            </div> */}
 
-                            <div className="product-reviews">
+                            {/* <div className="product-reviews">
                                 <Image
                                 src="/assets/icons/comment.svg"
                                 alt="comment"
@@ -112,12 +123,12 @@ const productDetails = async ({params : { id }} : Props) => {
                                 <p className="text-sm text-secondary font-semibold">
                                     {product.reviewsCount} Reviews
                                 </p>
-                            </div>
+                            </div> */}
 
                         </div>
 
                         <p className="text-sm text-black opacity-50">
-                            <span className="text-primary-green font-semibold">93% </span>of buyers have recommended this.
+                            {/* <span className="text-primary-green font-semibold">93% </span>of buyers have recommended this. */}
                         </p>
                     </div>
 
@@ -175,7 +186,7 @@ const productDetails = async ({params : { id }} : Props) => {
                 width={22}
                 height={22}
                 />
-                <Link href="/" className="text-base text-white">
+                <Link href={product.url} target="_blank" className="text-base text-white">
                     Buy Now
                 </Link>
             </button>

@@ -7,6 +7,7 @@ import { scrapeAmazonProduct } from "../scraper";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utils";
 import { User } from "@/types";
 import { generateEmailBody, sendEmail } from "../nodemailer";
+import {redirect} from 'next/navigation'
 
 export async function scrapeAndStoreProduct(productUrl: string){
     if(!productUrl) return;
@@ -44,9 +45,10 @@ export async function scrapeAndStoreProduct(productUrl: string){
             
         );
 
+        
         revalidatePath(`/products/${newProduct._id}`);
-
-
+        const productId = newProduct._id
+        return productId
 
     } catch (error: any) {
         throw new Error(`Failed to create/update product : ${error.message}`)

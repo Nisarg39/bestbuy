@@ -15,23 +15,23 @@ const Home = async () => {
         <div className='flex max-xl:flex-col gap-16'>
           <div className='flex flex-col justify-center'>
 
-            <p className='small-text'>
-              Smart Shopping Starts Here:
-              <Image 
+            <p className='small-text '>
+              Want to save some money on expensive products from amazon ?
+              {/* <Image 
                 src="/assets/icons/arrow-right.svg"
                 alt="arrow-right"
                 width={16}
                 height={16}
-              />
+              /> */}
             </p>
 
             <h1 className="head-text">
-              Unleash the Power of
-              <span className="text-primary"> SmartBuy</span>
+              Buy on Lowest Price using 
+              <span className="text-[#0ea5e9] "> SmartBuy</span>
             </h1>
 
             <p className="mt-6">
-            Powerful, self-serve product and growth analytics to help you convert, engage and retain more
+            Get notified when price drops to its lowest rate using smart analytics feature and don't missout to purchase on right time.
             </p>
               <Searchbar />
           </div>

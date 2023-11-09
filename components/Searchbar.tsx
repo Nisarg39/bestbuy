@@ -1,10 +1,13 @@
 "use client"
 import { scrapeAndStoreProduct } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
 import React, { FormEvent, use, useState } from 'react'
+
 
 const Searchbar = () => {
     const [searchPrompt, setsetsearchPrompt] = useState('')
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const isValidAmazonProductURL = (url: string) => {
        
@@ -28,20 +31,27 @@ const Searchbar = () => {
         event.preventDefault();
         const isValidlink = isValidAmazonProductURL(searchPrompt);
 
-        alert(isValidlink ? 'Valid Link ' : 'Invalid Link')
+        // alert(isValidlink ? 'Valid Link ' : 'Invalid Link')
+
 
         if(!isValidlink) return alert('please provide a valid amazon link')
+
 
         try {
             setIsLoading(true)
 
             // scraping the product
             const product = await scrapeAndStoreProduct(searchPrompt)
+
+            // redirecting to product page using product id passed using router.replace 
+            router.replace(`/products/${product}`)
+
         } catch (error) {
             console.log(error)
         }finally{
             setIsLoading(false)
         }
+
     }
 
   return (
