@@ -1,81 +1,77 @@
-import { NextResponse } from "next/server";
+"use client"
+import { scrapeAndStoreProduct } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
+import React, { FormEvent, use, useState } from 'react'
 
-import { getLowestPrice, getHighestPrice, getAveragePrice, getEmailNotifType } from "@/lib/utils";
-import { connectToDB } from "@/lib/mongoose";
-import Product from "@/lib/models/product.model";
-import { scrapeAmazonProduct } from "@/lib/scraper";
-import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 
-export const maxDuration = 10; // This function can run for a maximum of 10 seconds
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+const Searchbar = () => {
+    const [searchPrompt, setsetsearchPrompt] = useState('')
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
-export async function GET(request: Request) {
-  try {
-    connectToDB();
+    const isValidAmazonProductURL = (url: string) => {
+       
+        try {
+            const parsedURL = new URL(url);
+            const hostname = parsedURL.hostname;    
 
-    const products = await Product.find({});
+            if(
+                hostname.includes('amazon.com') ||
+                hostname.includes('amazon.') ||
+                hostname.includes('amazon') 
+            ){
+                return true;
+            }
+        } catch (error) {
+            return false;
+        }
+    }
 
-    if (!products) throw new Error("No product fetched");
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const isValidlink = isValidAmazonProductURL(searchPrompt);
 
-    // ======================== 1 SCRAPE LATEST PRODUCT DETAILS & UPDATE DB
-    const updatedProducts = await Promise.all(
-      products.map(async (currentProduct) => {
-        // Scrape product
-        const scrapedProduct = await scrapeAmazonProduct(currentProduct.url);
+        // alert(isValidlink ? 'Valid Link ' : 'Invalid Link')
 
-        if (!scrapedProduct) return;
 
-        const updatedPriceHistory = [
-          ...currentProduct.priceHistory,
-          {
-            price: scrapedProduct.currentPrice,
-          },
-        ];
+        if(!isValidlink) return alert('please provide a valid amazon link')
 
-        const product = {
-          ...scrapedProduct,
-          priceHistory: updatedPriceHistory,
-          lowestPrice: getLowestPrice(updatedPriceHistory),
-          highestPrice: getHighestPrice(updatedPriceHistory),
-          averagePrice: getAveragePrice(updatedPriceHistory),
-        };
 
-        // Update Products in DB
-        const updatedProduct = await Product.findOneAndUpdate(
-          {
-            url: product.url,
-          },
-          product
-        );
+        try {
+            setIsLoading(true)
 
-        // ======================== 2 CHECK EACH PRODUCT'S STATUS & SEND EMAIL ACCORDINGLY
-        const emailNotifType = getEmailNotifType(
-          scrapedProduct,
-          currentProduct
-        );
+            // scraping the product
+            const product = await scrapeAndStoreProduct(searchPrompt)
 
-        if (emailNotifType && updatedProduct.users.length > 0) {
-          const productInfo = {
-            title: updatedProduct.title,
-            url: updatedProduct.url,
-          };
-          // Construct emailContent
-          const emailContent = await generateEmailBody(productInfo, emailNotifType);
-          // Get array of user emails
-          const userEmails = updatedProduct.users.map((user: any) => user.email);
-          // Send email notification
-          await sendEmail(emailContent, userEmails);
+            // redirecting to product page using product id passed using router.replace 
+            router.replace(`/products/${product}`)
+
+        } catch (error) {
+            console.log(error)
+        }finally{
+            setIsLoading(false)
         }
 
-        return updatedProduct;
-      })
-    );
+    }
 
-    return NextResponse.json({
-      message: "Ok",
-      data: updatedProducts,
-    });
-  } catch (error: any) {
-    throw new Error(`Failed to get all products: ${error.message}`);
-  }
+  return (
+    <form  className='flex flex-wrap gap-4 mt-12'
+        onSubmit={handleSubmit}
+    >
+        <input 
+        type="text"
+        value={searchPrompt}
+        onChange={(e) => setsetsearchPrompt(e.target.value)}
+        placeholder='Enter product link'
+        className='searchbar-input' />
+
+        <button type='submit' className='searchbar-btn'
+            disabled={searchPrompt === ''}
+        >
+            {isLoading ? 'Searching...' : 'Search'}
+        </button>
+    </form>
+  )
+}
+
+export default Searchbar
